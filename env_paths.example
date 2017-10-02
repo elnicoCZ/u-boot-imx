@@ -1,0 +1,3 @@
+export ENV_PATH_GCC=/opt/poky-eb/1.7/sysroots/x86_64-pokysdk-linux/usr/bin/arm-poky-linux-gnueabi
+export ENV_PATH_SYSROOT=/opt/poky-eb/1.7/sysroots/armv7a-vfp-neon-poky-linux-gnueabi
+export CROSS_COMPILE=arm-poky-linux-gnueabi-
