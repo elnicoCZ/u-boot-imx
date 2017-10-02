@@ -207,6 +207,13 @@ config TARGET_MX6ULL_9X9_EVK
 config TARGET_SECOMX6
 	bool "secomx6 boards"
 
+config TARGET_SQM4SX6EB
+	bool "sqm4sx6eb"
+	select MX6SX
+	select SUPPORT_SPL
+	select DM
+	select DM_THERMAL
+
 config TARGET_TBS2910
 	bool "TBS2910 Matrix ARM mini PC"
 
@@ -250,6 +257,7 @@ source "board/barco/titanium/Kconfig"
 source "board/boundary/nitrogen6x/Kconfig"
 source "board/compulab/cm_fx6/Kconfig"
 source "board/congatec/cgtqmx6eval/Kconfig"
+source "board/elnico/sqm4sx6eb/Kconfig"
 source "board/embest/mx6boards/Kconfig"
 source "board/freescale/mx6qarm2/Kconfig"
 source "board/freescale/mx6qsabreauto/Kconfig"
