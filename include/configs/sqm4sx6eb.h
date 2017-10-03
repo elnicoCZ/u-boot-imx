@@ -59,7 +59,8 @@
 				"sf write ${loadaddr} 0x0 ${filesize}; " \
 			"fi; " \
 		"fi\0" \
-	"m4boot=sf probe 1:0; bootaux "__stringify(CONFIG_SYS_AUXCORE_BOOTDATA)"\0"
+	"m4boot=sf probe 1:0; bootaux "__stringify(CONFIG_SYS_AUXCORE_BOOTDATA)"\0" \
+	"m4dummyboot=mw.l 0x7f8000 0x20008000; mw.l 0x7f8004 0x1fff9001 144; mw.w 0x7f9000 0xe7fe; dcache flush; bootaux 0x7F8000\0"
 #else
 #define UPDATE_M4_ENV ""
 #endif
@@ -84,11 +85,11 @@
 	"console=ttymxc0\0" \
 	"fdt_high=0xffffffff\0" \
 	"initrd_high=0xffffffff\0" \
-	"fdt_file=imx6sx-sdb.dtb\0" \
+	"fdt_file=sqm4sx6-eb-m4.dtb\0" \
 	"fdt_addr=0x83000000\0" \
 	"boot_fdt=try\0" \
 	"ip_dyn=yes\0" \
-	"panel=Hannstar-XGA\0" \
+	"panel=FRD43LCD\0" \
 	"mmcdev="__stringify(CONFIG_SYS_MMC_ENV_DEV)"\0" \
 	"mmcpart=1\0" \
 	"mmcroot=" CONFIG_MMCROOT " rootwait rw\0" \
@@ -221,8 +222,8 @@
 /* PMIC */
 #define CONFIG_POWER
 #define CONFIG_POWER_I2C
-#define CONFIG_POWER_PFUZE100
-#define CONFIG_POWER_PFUZE100_I2C_ADDR	0x08
+#define CONFIG_POWER_PFUZE3000
+#define CONFIG_POWER_PFUZE3000_I2C_ADDR	0x08
 
 /* Network */
 #define CONFIG_CMD_PING
@@ -235,17 +236,17 @@
 
 #if (CONFIG_FEC_ENET_DEV == 0)
 #define IMX_FEC_BASE			ENET_BASE_ADDR
-#define CONFIG_FEC_MXC_PHYADDR          0x1
+#define CONFIG_FEC_MXC_PHYADDR          0x0
 #elif (CONFIG_FEC_ENET_DEV == 1)
 #define IMX_FEC_BASE			ENET2_BASE_ADDR
-#define CONFIG_FEC_MXC_PHYADDR          0x2
+#define CONFIG_FEC_MXC_PHYADDR          0x1
 #endif
 
 #define CONFIG_FEC_XCV_TYPE             RGMII
 #define CONFIG_ETHPRIME                 "FEC"
 
 #define CONFIG_PHYLIB
-#define CONFIG_PHY_ATHEROS
+#define CONFIG_PHY_MICREL
 
 
 #define CONFIG_CMD_USB
@@ -259,26 +260,6 @@
 #define CONFIG_MXC_USB_PORTSC  (PORT_PTS_UTMI | PORT_PTS_PTW)
 #define CONFIG_MXC_USB_FLAGS   0
 #define CONFIG_USB_MAX_CONTROLLER_COUNT 2
-#endif
-
-/*
- * The PCIe support in uboot would bring failures in i.MX6SX PCIe
- * EP/RC validations. Disable PCIe support in uboot here.
- * RootCause: The bit10(ltssm_en) of GPR12 would be set in uboot,
- * thus the i.MX6SX PCIe EP would be cheated that the other i.MX6SX
- * PCIe RC had been configured and trying to setup PCIe link directly,
- * although the i.MX6SX RC is not properly configured at that time.
- * PCIe can be supported in uboot, if the i.MX6SX PCIe EP/RC validation
- * is not running.
- */
-/* #define CONFIG_CMD_PCI */
-#ifdef CONFIG_CMD_PCI
-#define CONFIG_PCI
-#define CONFIG_PCI_PNP
-#define CONFIG_PCI_SCAN_SHOW
-#define CONFIG_PCIE_IMX
-#define CONFIG_PCIE_IMX_PERST_GPIO	IMX_GPIO_NR(2, 0)
-#define CONFIG_PCIE_IMX_POWER_GPIO	IMX_GPIO_NR(2, 1)
 #endif
 
 #define CONFIG_IMX_THERMAL
