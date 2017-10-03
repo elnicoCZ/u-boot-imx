@@ -1,7 +1,9 @@
 /*
- * Copyright 2014-2016 Freescale Semiconductor, Inc.
+ * Copyright (C) 2017 Elnico s.r.o.
  *
- * Configuration settings for the Freescale i.MX6SX Sabresd board.
+ * Author: Petr Kubiznak <kubiznak.petr@elnico.cz>
+ *
+ * Configuration settings for the Elnico SQM4-SX6-EasyBoard.
  *
  * SPDX-License-Identifier:	GPL-2.0+
  */

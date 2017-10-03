@@ -1,7 +1,7 @@
 /*
- * Copyright (C) 2014-2016 Freescale Semiconductor, Inc.
+ * Copyright (C) 2017 Elnico s.r.o.
  *
- * Author: Fabio Estevam <fabio.estevam@freescale.com>
+ * Author: Petr Kubiznak <kubiznak.petr@elnico.cz>
  *
  * SPDX-License-Identifier:	GPL-2.0+
  */
