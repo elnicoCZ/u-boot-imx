@@ -10,7 +10,7 @@ if [ $# -lt 1 ] || [ $# -gt 2 ]; then
 	exit 1
 fi
 BOARD=$1
-VERSION=v2016.01
+VERSION=v2016.03
 PADFILE=pad.tmp
 
 [ -f $PADFILE ] && rm $PADFILE
