@@ -178,20 +178,23 @@
 #define CONFIG_SYS_INIT_SP_ADDR \
 	(CONFIG_SYS_INIT_RAM_ADDR + CONFIG_SYS_INIT_SP_OFFSET)
 
-#ifdef CONFIG_SYS_AUXCORE_FASTUP
-/* #define CONFIG_IMX_RDC */   /* Disable the RDC temporarily, will enable it in future */
-#define CONFIG_ENV_IS_IN_MMC  /* Must disable QSPI driver, because M4 run on QSPI */
-#elif defined CONFIG_SYS_BOOT_QSPI
-#define CONFIG_FSL_QSPI
-#define CONFIG_ENV_IS_IN_SPI_FLASH
-#else
-#define CONFIG_FSL_QSPI   /* Enable the QSPI flash at default */
-#define CONFIG_ENV_IS_IN_MMC
+#define CONFIG_FSL_QSPI		/* Enable the QSPI flash at default */
+#define CONFIG_SYS_USE_NAND	/* Enable the NAND flash at default */
+
+#ifdef CONFIG_SYS_AUXCORE_FASTUP	/* M4 fast-up */
+# undef CONFIG_FSL_QSPI		/* M4 runs from QSPI -> disable the driver */
+# define CONFIG_ENV_IS_IN_MMC
+#elif defined CONFIG_SYS_BOOT_QSPI	/* boot from QSPI */
+# define CONFIG_ENV_IS_IN_SPI_FLASH
+#elif defined CONFIG_SYS_BOOT_NAND	/* boot from NAND */
+# define CONFIG_ENV_IS_IN_NAND
+#else					/* boot from SD */
+# define CONFIG_ENV_IS_IN_MMC
 #endif
 
 #ifdef CONFIG_FSL_QSPI
-#define CONFIG_QSPI_BASE		QSPI1_BASE_ADDR
-#define CONFIG_QSPI_MEMMAP_BASE		QSPI1_AMBA_BASE
+#define CONFIG_QSPI_BASE		QSPI0_BASE_ADDR
+#define CONFIG_QSPI_MEMMAP_BASE		QSPI0_AMBA_BASE
 
 #define CONFIG_CMD_SF
 #define CONFIG_SPI_FLASH
@@ -202,6 +205,24 @@
 #define	CONFIG_SF_DEFAULT_CS		0
 #define	CONFIG_SF_DEFAULT_SPEED		40000000
 #define	CONFIG_SF_DEFAULT_MODE		SPI_MODE_0
+#endif
+
+#ifdef CONFIG_SYS_USE_NAND
+/* NAND flash command */
+#define CONFIG_CMD_NAND
+#define CONFIG_CMD_NAND_TRIMFFS
+
+/* NAND stuff */
+#define CONFIG_NAND_MXS
+#define CONFIG_SYS_MAX_NAND_DEVICE	1
+#define CONFIG_SYS_NAND_BASE		0x40000000
+#define CONFIG_SYS_NAND_5_ADDR_CYCLE
+#define CONFIG_SYS_NAND_ONFI_DETECTION
+
+/* DMA stuff, needed for GPMI/MXS NAND support */
+#define CONFIG_APBH_DMA
+#define CONFIG_APBH_DMA_BURST
+#define CONFIG_APBH_DMA_BURST8
 #endif
 
 /* MMC Configuration */

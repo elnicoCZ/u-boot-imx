@@ -75,6 +75,11 @@ DECLARE_GLOBAL_DATA_PTR;
 	PAD_CTL_DSE_40ohm | PAD_CTL_HYS |			\
 	PAD_CTL_ODE)
 
+#define GPMI_PAD_CTRL0 (PAD_CTL_PKE | PAD_CTL_PUE | PAD_CTL_PUS_100K_UP)
+#define GPMI_PAD_CTRL1 (PAD_CTL_DSE_40ohm | PAD_CTL_SPEED_MED | \
+			PAD_CTL_SRE_FAST)
+#define GPMI_PAD_CTRL2 (GPMI_PAD_CTRL0 | GPMI_PAD_CTRL1)
+
 #define LCD_PAD_CTRL    (PAD_CTL_HYS | PAD_CTL_PUS_100K_UP | PAD_CTL_PUE | \
 	PAD_CTL_PKE | PAD_CTL_SPEED_MED | PAD_CTL_DSE_40ohm)
 
@@ -139,7 +144,7 @@ static iomux_v3_cfg_t const usdhc4_pads[] = {
 };
 
 static iomux_v3_cfg_t const peri_3v3_pads[] = {
-	MX6_PAD_QSPI1A_DATA0__GPIO4_IO_16 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_KEY_ROW0__GPIO2_IO_15 | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
 
 static iomux_v3_cfg_t const fec1_pads[] = {
@@ -160,8 +165,8 @@ static iomux_v3_cfg_t const fec1_pads[] = {
 };
 
 static iomux_v3_cfg_t const fec2_pads[] = {
-	MX6_PAD_ENET1_MDC__ENET2_MDC | MUX_PAD_CTRL(ENET_PAD_CTRL),
-	MX6_PAD_ENET1_MDIO__ENET2_MDIO | MUX_PAD_CTRL(ENET_PAD_CTRL),
+	MX6_PAD_KEY_COL4__ENET2_MDC | MUX_PAD_CTRL(ENET_PAD_CTRL),
+	MX6_PAD_KEY_ROW4__ENET2_MDIO | MUX_PAD_CTRL(ENET_PAD_CTRL),
 	MX6_PAD_RGMII2_RX_CTL__ENET2_RX_EN | MUX_PAD_CTRL(ENET_RX_PAD_CTRL),
 	MX6_PAD_RGMII2_RD0__ENET2_RX_DATA_0 | MUX_PAD_CTRL(ENET_RX_PAD_CTRL),
 	MX6_PAD_RGMII2_RD1__ENET2_RX_DATA_1 | MUX_PAD_CTRL(ENET_RX_PAD_CTRL),
@@ -356,7 +361,7 @@ void ldo_mode_set(int ldo_bypass)
 #define UCTRL_PWR_POL		(1 << 9)
 
 static iomux_v3_cfg_t const usb_otg_pads[] = {
-	/* OGT1 */
+	/* OTG1 */
 	MX6_PAD_GPIO1_IO09__USB_OTG1_PWR | MUX_PAD_CTRL(NO_PAD_CTRL),
 	MX6_PAD_GPIO1_IO10__ANATOP_OTG1_ID | MUX_PAD_CTRL(OTG_ID_PAD_CTRL),
 	/* OTG2 */
@@ -551,18 +556,12 @@ int board_mmc_init(bd_t *bis)
 	 PAD_CTL_PKE | PAD_CTL_PUE | PAD_CTL_PUS_47K_UP | PAD_CTL_DSE_40ohm)
 
 static iomux_v3_cfg_t const quadspi_pads[] = {
-	MX6_PAD_NAND_WP_B__QSPI2_A_DATA_0	| MUX_PAD_CTRL(QSPI_PAD_CTRL1),
-	MX6_PAD_NAND_READY_B__QSPI2_A_DATA_1	| MUX_PAD_CTRL(QSPI_PAD_CTRL1),
-	MX6_PAD_NAND_CE0_B__QSPI2_A_DATA_2	| MUX_PAD_CTRL(QSPI_PAD_CTRL1),
-	MX6_PAD_NAND_CE1_B__QSPI2_A_DATA_3	| MUX_PAD_CTRL(QSPI_PAD_CTRL1),
-	MX6_PAD_NAND_ALE__QSPI2_A_SS0_B		| MUX_PAD_CTRL(QSPI_PAD_CTRL1),
-	MX6_PAD_NAND_CLE__QSPI2_A_SCLK		| MUX_PAD_CTRL(QSPI_PAD_CTRL1),
-	MX6_PAD_NAND_DATA01__QSPI2_B_DATA_0	| MUX_PAD_CTRL(QSPI_PAD_CTRL1),
-	MX6_PAD_NAND_DATA00__QSPI2_B_DATA_1	| MUX_PAD_CTRL(QSPI_PAD_CTRL1),
-	MX6_PAD_NAND_WE_B__QSPI2_B_DATA_2	| MUX_PAD_CTRL(QSPI_PAD_CTRL1),
-	MX6_PAD_NAND_RE_B__QSPI2_B_DATA_3	| MUX_PAD_CTRL(QSPI_PAD_CTRL1),
-	MX6_PAD_NAND_DATA03__QSPI2_B_SS0_B	| MUX_PAD_CTRL(QSPI_PAD_CTRL1),
-	MX6_PAD_NAND_DATA02__QSPI2_B_SCLK	| MUX_PAD_CTRL(QSPI_PAD_CTRL1),
+	MX6_PAD_QSPI1A_DATA0__QSPI1_A_DATA_0	| MUX_PAD_CTRL(QSPI_PAD_CTRL1),
+	MX6_PAD_QSPI1A_DATA1__QSPI1_A_DATA_1	| MUX_PAD_CTRL(QSPI_PAD_CTRL1),
+	MX6_PAD_QSPI1A_DATA2__QSPI1_A_DATA_2	| MUX_PAD_CTRL(QSPI_PAD_CTRL1),
+	MX6_PAD_QSPI1A_DATA3__QSPI1_A_DATA_3	| MUX_PAD_CTRL(QSPI_PAD_CTRL1),
+	MX6_PAD_QSPI1A_SCLK__QSPI1_A_SCLK	| MUX_PAD_CTRL(QSPI_PAD_CTRL1),
+	MX6_PAD_QSPI1A_SS0_B__QSPI1_A_SS0_B	| MUX_PAD_CTRL(QSPI_PAD_CTRL1),
 };
 
 int board_qspi_init(void)
@@ -572,9 +571,43 @@ int board_qspi_init(void)
 					 ARRAY_SIZE(quadspi_pads));
 
 	/* Set the clock */
-	enable_qspi_clk(1);
+	enable_qspi_clk(0);
 
 	return 0;
+}
+#endif
+
+#ifdef CONFIG_NAND_MXS
+iomux_v3_cfg_t gpmi_pads[] = {
+	MX6_PAD_NAND_CLE__RAWNAND_CLE		| MUX_PAD_CTRL(GPMI_PAD_CTRL2),
+	MX6_PAD_NAND_ALE__RAWNAND_ALE		| MUX_PAD_CTRL(GPMI_PAD_CTRL2),
+	MX6_PAD_NAND_READY_B__RAWNAND_READY_B	| MUX_PAD_CTRL(GPMI_PAD_CTRL0),
+	MX6_PAD_NAND_CE0_B__RAWNAND_CE0_B	| MUX_PAD_CTRL(GPMI_PAD_CTRL2),
+	MX6_PAD_NAND_RE_B__RAWNAND_RE_B		| MUX_PAD_CTRL(GPMI_PAD_CTRL2),
+	MX6_PAD_NAND_WE_B__RAWNAND_WE_B		| MUX_PAD_CTRL(GPMI_PAD_CTRL2),
+	MX6_PAD_NAND_DATA00__RAWNAND_DATA00	| MUX_PAD_CTRL(GPMI_PAD_CTRL2),
+	MX6_PAD_NAND_DATA01__RAWNAND_DATA01	| MUX_PAD_CTRL(GPMI_PAD_CTRL2),
+	MX6_PAD_NAND_DATA02__RAWNAND_DATA02	| MUX_PAD_CTRL(GPMI_PAD_CTRL2),
+	MX6_PAD_NAND_DATA03__RAWNAND_DATA03	| MUX_PAD_CTRL(GPMI_PAD_CTRL2),
+	MX6_PAD_NAND_DATA04__RAWNAND_DATA04	| MUX_PAD_CTRL(GPMI_PAD_CTRL2),
+	MX6_PAD_NAND_DATA05__RAWNAND_DATA05	| MUX_PAD_CTRL(GPMI_PAD_CTRL2),
+	MX6_PAD_NAND_DATA06__RAWNAND_DATA06	| MUX_PAD_CTRL(GPMI_PAD_CTRL2),
+	MX6_PAD_NAND_DATA07__RAWNAND_DATA07	| MUX_PAD_CTRL(GPMI_PAD_CTRL2),
+};
+
+static void setup_gpmi_nand(void)
+{
+	struct mxc_ccm_reg *mxc_ccm = (struct mxc_ccm_reg *)CCM_BASE_ADDR;
+
+	/* config gpmi nand iomux */
+	imx_iomux_v3_setup_multiple_pads(gpmi_pads, ARRAY_SIZE(gpmi_pads));
+
+	setup_gpmi_io_clk((MXC_CCM_CS2CDR_QSPI2_CLK_PODF(0) |
+			MXC_CCM_CS2CDR_QSPI2_CLK_PRED(3) |
+			MXC_CCM_CS2CDR_QSPI2_CLK_SEL(3)));
+
+	/* enable apbh clock gating */
+	setbits_le32(&mxc_ccm->CCGR0, MXC_CCM_CCGR0_APBHDMA_MASK);
 }
 #endif
 
@@ -583,7 +616,8 @@ static const struct boot_mode board_boot_modes[] = {
 	/* 4 bit bus width */
 	{"sd3", MAKE_CFGVAL(0x42, 0x30, 0x00, 0x00)},
 	{"sd4", MAKE_CFGVAL(0x40, 0x38, 0x00, 0x00)},
-	{"qspi2", MAKE_CFGVAL(0x18, 0x00, 0x00, 0x00)},
+	{"qspi1", MAKE_CFGVAL(0x10, 0x00, 0x00, 0x00)},
+	{"nand", MAKE_CFGVAL(0x82, 0x00, 0x00, 0x00)},
 	{NULL,	 0},
 };
 #endif
@@ -650,7 +684,7 @@ struct display_info_t const displays[] = {
 {
 	.bus = MX6SX_LCDIF1_BASE_ADDR,
 	.addr = 0,
-	.pixfmt = 16,
+	.pixfmt = 24,
 	.detect = NULL,
 	.enable	= do_enable_parallel_lcd,
 	.mode	= {
@@ -694,6 +728,9 @@ int board_init(void)
 #ifdef CONFIG_FSL_QSPI
 	board_qspi_init();
 #endif
+#ifdef CONFIG_NAND_MXS
+	setup_gpmi_nand();
+#endif
 
 	return 0;
 }
@@ -713,7 +750,7 @@ int board_late_init(void)
 
 int checkboard(void)
 {
-	puts("Board: SQM4SX6-EB\n");
+	puts("Board: SQM4SX6-EB (SQM4SX6 2.0, EB 3.0)\n");
 
 	return 0;
 }
