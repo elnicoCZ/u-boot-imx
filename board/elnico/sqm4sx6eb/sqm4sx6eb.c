@@ -105,15 +105,6 @@ static iomux_v3_cfg_t const uart1_pads[] = {
 	MX6_PAD_GPIO1_IO05__UART1_RX | MUX_PAD_CTRL(UART_PAD_CTRL),
 };
 
-static iomux_v3_cfg_t const usdhc2_pads[] = {
-	MX6_PAD_SD2_CLK__USDHC2_CLK | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-	MX6_PAD_SD2_CMD__USDHC2_CMD | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-	MX6_PAD_SD2_DATA0__USDHC2_DATA0 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-	MX6_PAD_SD2_DATA1__USDHC2_DATA1 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-	MX6_PAD_SD2_DATA2__USDHC2_DATA2 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-	MX6_PAD_SD2_DATA3__USDHC2_DATA3 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-};
-
 static iomux_v3_cfg_t const usdhc3_pads[] = {
 	MX6_PAD_SD3_CLK__USDHC3_CLK | MUX_PAD_CTRL(USDHC_PAD_CTRL),
 	MX6_PAD_SD3_CMD__USDHC3_CMD | MUX_PAD_CTRL(USDHC_PAD_CTRL),
@@ -121,16 +112,6 @@ static iomux_v3_cfg_t const usdhc3_pads[] = {
 	MX6_PAD_SD3_DATA1__USDHC3_DATA1 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
 	MX6_PAD_SD3_DATA2__USDHC3_DATA2 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
 	MX6_PAD_SD3_DATA3__USDHC3_DATA3 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-	MX6_PAD_SD3_DATA4__USDHC3_DATA4 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-	MX6_PAD_SD3_DATA5__USDHC3_DATA5 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-	MX6_PAD_SD3_DATA6__USDHC3_DATA6 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-	MX6_PAD_SD3_DATA7__USDHC3_DATA7 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-
-	/* CD pin */
-	MX6_PAD_KEY_COL0__GPIO2_IO_10 | MUX_PAD_CTRL(NO_PAD_CTRL),
-
-	/* RST_B, used for power reset cycle */
-	MX6_PAD_KEY_COL1__GPIO2_IO_11 | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
 
 static iomux_v3_cfg_t const usdhc4_pads[] = {
@@ -420,14 +401,11 @@ int board_early_init_f(void)
 	return 0;
 }
 
-static struct fsl_esdhc_cfg usdhc_cfg[3] = {
-	{USDHC2_BASE_ADDR, 0, 4},
+static struct fsl_esdhc_cfg usdhc_cfg[CONFIG_SYS_FSL_USDHC_NUM] = {
 	{USDHC3_BASE_ADDR},
 	{USDHC4_BASE_ADDR},
 };
 
-#define USDHC3_CD_GPIO	IMX_GPIO_NR(2, 10)
-#define USDHC3_PWR_GPIO	IMX_GPIO_NR(2, 11)
 #define USDHC4_CD_GPIO	IMX_GPIO_NR(6, 21)
 
 int board_mmc_get_env_dev(int devno)
@@ -437,7 +415,7 @@ int board_mmc_get_env_dev(int devno)
 
 int mmc_map_to_kernel_blk(int dev_no)
 {
-	return dev_no + 1;
+	return dev_no + 2;	/* mmc1 -> mmcblk3 */
 }
 
 int board_mmc_getcd(struct mmc *mmc)
@@ -446,11 +424,8 @@ int board_mmc_getcd(struct mmc *mmc)
 	int ret = 0;
 
 	switch (cfg->esdhc_base) {
-	case USDHC2_BASE_ADDR:
-		ret = 1; /* Assume uSDHC2 is always present */
-		break;
 	case USDHC3_BASE_ADDR:
-		ret = !gpio_get_value(USDHC3_CD_GPIO);
+		ret = 1; /* Assume uSDHC3 is always present */
 		break;
 	case USDHC4_BASE_ADDR:
 		ret = !gpio_get_value(USDHC4_CD_GPIO);
@@ -468,29 +443,21 @@ int board_mmc_init(bd_t *bis)
 	/*
 	 * According to the board_mmc_init() the following map is done:
 	 * (U-Boot device node)    (Physical Port)
-	 * mmc0                    USDHC2
-	 * mmc1                    USDHC3
-	 * mmc2                    USDHC4
+	 * mmc0                    USDHC3
+	 * mmc1                    USDHC4
 	 */
 	for (i = 0; i < CONFIG_SYS_FSL_USDHC_NUM; i++) {
 		switch (i) {
 		case 0:
 			imx_iomux_v3_setup_multiple_pads(
-				usdhc2_pads, ARRAY_SIZE(usdhc2_pads));
-			usdhc_cfg[0].sdhc_clk = mxc_get_clock(MXC_ESDHC2_CLK);
+				usdhc3_pads, ARRAY_SIZE(usdhc3_pads));
+			usdhc_cfg[i].sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
 			break;
 		case 1:
 			imx_iomux_v3_setup_multiple_pads(
-				usdhc3_pads, ARRAY_SIZE(usdhc3_pads));
-			gpio_direction_input(USDHC3_CD_GPIO);
-			gpio_direction_output(USDHC3_PWR_GPIO, 1);
-			usdhc_cfg[1].sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
-			break;
-		case 2:
-			imx_iomux_v3_setup_multiple_pads(
 				usdhc4_pads, ARRAY_SIZE(usdhc4_pads));
 			gpio_direction_input(USDHC4_CD_GPIO);
-			usdhc_cfg[2].sdhc_clk = mxc_get_clock(MXC_ESDHC4_CLK);
+			usdhc_cfg[i].sdhc_clk = mxc_get_clock(MXC_ESDHC4_CLK);
 			break;
 		default:
 			printf("Warning: you configured more USDHC controllers"
@@ -521,17 +488,9 @@ int board_mmc_init(bd_t *bis)
 	port = (val >> 11) & 0x3;
 	printf("port %d\n", port);
 	switch (port) {
-	case 1:
-		imx_iomux_v3_setup_multiple_pads(
-			usdhc2_pads, ARRAY_SIZE(usdhc2_pads));
-		usdhc_cfg[0].sdhc_clk = mxc_get_clock(MXC_ESDHC2_CLK);
-		usdhc_cfg[0].esdhc_base = USDHC2_BASE_ADDR;
-		break;
 	case 2:
 		imx_iomux_v3_setup_multiple_pads(
 			usdhc3_pads, ARRAY_SIZE(usdhc3_pads));
-		gpio_direction_input(USDHC3_CD_GPIO);
-		gpio_direction_output(USDHC3_PWR_GPIO, 1);
 		usdhc_cfg[0].sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
 		usdhc_cfg[0].esdhc_base = USDHC3_BASE_ADDR;
 		break;
@@ -714,8 +673,8 @@ int board_init(void)
 	imx_iomux_v3_setup_multiple_pads(peri_3v3_pads,
 					 ARRAY_SIZE(peri_3v3_pads));
 
-	/* Active high for ncp692 */
-	gpio_direction_output(IMX_GPIO_NR(4, 16) , 1);
+	/* PMIC_SD_VSEL */
+	gpio_direction_output(IMX_GPIO_NR(2, 15) , 1);
 
 #ifdef CONFIG_SYS_I2C_MXC
 	setup_i2c(0, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c_pad_info1);
@@ -760,26 +719,19 @@ void board_fastboot_setup(void)
 {
 	switch (get_boot_device()) {
 #if defined(CONFIG_FASTBOOT_STORAGE_MMC)
-	case SD2_BOOT:
-	case MMC2_BOOT:
+	case SD3_BOOT:
+	case MMC3_BOOT:
 		if (!getenv("fastboot_dev"))
 			setenv("fastboot_dev", "mmc0");
 		if (!getenv("bootcmd"))
 			setenv("bootcmd", "boota mmc0");
 		break;
-	case SD3_BOOT:
-	case MMC3_BOOT:
+	case SD4_BOOT:
+	case MMC4_BOOT:
 		if (!getenv("fastboot_dev"))
 			setenv("fastboot_dev", "mmc1");
 		if (!getenv("bootcmd"))
 			setenv("bootcmd", "boota mmc1");
-		break;
-	case SD4_BOOT:
-	case MMC4_BOOT:
-		if (!getenv("fastboot_dev"))
-			setenv("fastboot_dev", "mmc2");
-		if (!getenv("bootcmd"))
-			setenv("bootcmd", "boota mmc2");
 		break;
 #endif /*CONFIG_FASTBOOT_STORAGE_MMC*/
 	default:

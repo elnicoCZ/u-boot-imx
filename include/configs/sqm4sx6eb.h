@@ -226,10 +226,10 @@
 #endif
 
 /* MMC Configuration */
-#define CONFIG_SYS_FSL_USDHC_NUM	3
-#define CONFIG_SYS_MMC_ENV_DEV		2  /*USDHC4*/
+#define CONFIG_SYS_FSL_USDHC_NUM	2
+#define CONFIG_SYS_MMC_ENV_DEV		1	/*USDHC4*/
 #define CONFIG_SYS_MMC_ENV_PART		0	/* user area */
-#define CONFIG_MMCROOT			"/dev/mmcblk3p2"  /* USDHC4 */
+#define CONFIG_MMCROOT			"/dev/mmcblk3p2"  /* USDHC4; THIS WILL BE OVERWRITTEN BY board_late_mmc_env_init(), calling mmc_map_to_kernel_blk() ! */
 
 #define CONFIG_SYS_FSL_ESDHC_ADDR	USDHC4_BASE_ADDR
 
@@ -321,8 +321,6 @@
 #define CONFIG_ENV_SPI_MODE		CONFIG_SF_DEFAULT_MODE
 #define CONFIG_ENV_SPI_MAX_HZ		CONFIG_SF_DEFAULT_SPEED
 #endif
-
-#define CONFIG_SYS_FSL_USDHC_NUM	3
 
 #if defined(CONFIG_ANDROID_SUPPORT)
 #include "sqm4sx6eb_android.h"
