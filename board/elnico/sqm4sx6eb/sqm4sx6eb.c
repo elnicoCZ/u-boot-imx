@@ -295,6 +295,11 @@ int power_init_board(void)
 	pmic_reg_read(p, PFUZE3000_REVID, &rev_id);
 	printf("PMIC: PFUZE3000 DEV_ID=0x%x REV_ID=0x%x\n", reg, rev_id);
 
+	/* disable VLDO1 by default */
+	pmic_reg_read(p, PFUZE3000_VLDO1CTL, &reg);
+	reg &= ~0x10;
+	pmic_reg_write(p, PFUZE3000_VLDO1CTL, reg);
+
 	return 0;
 }
 
