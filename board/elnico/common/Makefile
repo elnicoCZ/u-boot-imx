@@ -6,4 +6,3 @@
 #
 
 obj-y += ../common_fsl/
-
