@@ -69,6 +69,7 @@
 
 #define CONFIG_MFG_ENV_SETTINGS \
 	"mfgtool_args=setenv bootargs console=${console},${baudrate} " \
+		"uart_from_osc " \
 		"rdinit=/linuxrc " \
 		"g_mass_storage.stall=0 g_mass_storage.removable=1 " \
 		"g_mass_storage.file=/fat g_mass_storage.ro=1 " \
@@ -312,14 +313,19 @@
 
 #define CONFIG_ENV_SIZE			SZ_8K
 #if defined(CONFIG_ENV_IS_IN_MMC)
-#define CONFIG_ENV_OFFSET		(12 * SZ_64K)
+# define CONFIG_ENV_OFFSET		(12 * SZ_64K)
 #elif defined(CONFIG_ENV_IS_IN_SPI_FLASH)
-#define CONFIG_ENV_OFFSET		(768 * 1024)
-#define CONFIG_ENV_SECT_SIZE		(64 * 1024)
-#define CONFIG_ENV_SPI_BUS		CONFIG_SF_DEFAULT_BUS
-#define CONFIG_ENV_SPI_CS		CONFIG_SF_DEFAULT_CS
-#define CONFIG_ENV_SPI_MODE		CONFIG_SF_DEFAULT_MODE
-#define CONFIG_ENV_SPI_MAX_HZ		CONFIG_SF_DEFAULT_SPEED
+# define CONFIG_ENV_OFFSET		(768 * 1024)
+# define CONFIG_ENV_SECT_SIZE		(64 * 1024)
+# define CONFIG_ENV_SPI_BUS		CONFIG_SF_DEFAULT_BUS
+# define CONFIG_ENV_SPI_CS		CONFIG_SF_DEFAULT_CS
+# define CONFIG_ENV_SPI_MODE		CONFIG_SF_DEFAULT_MODE
+# define CONFIG_ENV_SPI_MAX_HZ		CONFIG_SF_DEFAULT_SPEED
+#elif defined(CONFIG_ENV_IS_IN_NAND)
+# define CONFIG_ENV_SECT_SIZE		(128 << 10)	/* 128 kB */
+# undef CONFIG_ENV_SIZE
+# define CONFIG_ENV_SIZE		CONFIG_ENV_SECT_SIZE
+# define CONFIG_ENV_OFFSET		(60 << 20)
 #endif
 
 #if defined(CONFIG_ANDROID_SUPPORT)
