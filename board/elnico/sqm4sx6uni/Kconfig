@@ -1,0 +1,12 @@
+if TARGET_SQM4SX6UNI
+
+config SYS_BOARD
+	default "sqm4sx6uni"
+
+config SYS_VENDOR
+	default "elnico"
+
+config SYS_CONFIG_NAME
+	default "sqm4sx6uni"
+
+endif
