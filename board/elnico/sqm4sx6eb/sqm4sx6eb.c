@@ -301,7 +301,6 @@ static iomux_v3_cfg_t const lcd_pads[] = {
 };
 
 void do_enable_parallel_lcd(struct display_info_t const *dev)
-
 {
 	int ret;
 

@@ -59,6 +59,8 @@
 #define CONFIG_VIDEO_SW_CURSOR
 #define CONFIG_VGA_AS_SINGLE_DEVICE
 #define CONFIG_SYS_CONSOLE_IS_IN_ENV
+#define CONFIG_SYS_CONSOLE_BG_COL	0xff
+#define CONFIG_SYS_CONSOLE_FG_COL	0x00
 #define CONFIG_SPLASH_SCREEN
 #define CONFIG_SPLASH_SCREEN_ALIGN
 #define CONFIG_CMD_BMP
@@ -120,6 +122,7 @@
 	"boot_fdt=try\0" \
 	"ip_dyn=yes\0" \
 	"panel=FRD43LCD\0" \
+	"splashpos=m,m\0" \
 	"mmcdev="__stringify(CONFIG_SYS_MMC_ENV_DEV)"\0" \
 	"mmcpart=1\0" \
 	"mmcroot=" CONFIG_MMCROOT " rootwait rw\0" \
