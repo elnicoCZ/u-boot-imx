@@ -95,6 +95,11 @@
 #define CONFIG_CMD_NAND
 #define CONFIG_CMD_NAND_TRIMFFS
 #define CONFIG_CMD_MTDPARTS
+#define CONFIG_MTD_PARTITIONS
+#define CONFIG_MTD_DEVICE
+
+#define MTDIDS_DEFAULT			"nand0=gpmi-nand"
+#define MTDPARTS_DEFAULT		"mtdparts=gpmi-nand:8m(boot),256k(env),768k(aux),16m(kernel),4m(dtb),-(rootfs)"
 
 /* NAND stuff */
 #define CONFIG_NAND_MXS
@@ -178,10 +183,13 @@
 # define CONFIG_ENV_SPI_MODE		CONFIG_SF_DEFAULT_MODE
 # define CONFIG_ENV_SPI_MAX_HZ		CONFIG_SF_DEFAULT_SPEED
 #elif defined(CONFIG_ENV_IS_IN_NAND)
+/* This configuration must correspond to the mtdparts settings. */
 # define CONFIG_ENV_SECT_SIZE		(128 << 10)	/* 128 kB */
 # undef CONFIG_ENV_SIZE
 # define CONFIG_ENV_SIZE		CONFIG_ENV_SECT_SIZE
-# define CONFIG_ENV_OFFSET		(60 << 20)
+# define CONFIG_ENV_OFFSET		(8 << 20)	/* 8 MB offset */
+# define CONFIG_ENV_SIZE_REDUND		(CONFIG_ENV_SIZE)
+# define CONFIG_ENV_OFFSET_REDUND	((CONFIG_ENV_OFFSET) + (CONFIG_ENV_SIZE))
 #endif
 
 /******************************************************************************/
